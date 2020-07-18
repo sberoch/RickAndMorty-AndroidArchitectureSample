@@ -1,8 +1,8 @@
 package com.example.rickandmorty.data.remote
 
-import android.util.Log
 import com.example.rickandmorty.utils.Resource
 import retrofit2.Response
+import timber.log.Timber
 
 abstract class BaseDataSource {
 
@@ -20,7 +20,7 @@ abstract class BaseDataSource {
     }
 
     private fun <T> error(message: String): Resource<T> {
-        Log.e("remoteDataSource", message)
+        Timber.d(message)
         return Resource.error("Network call has failed for a following reason: $message")
     }
 
