@@ -29,9 +29,13 @@ class CharactersFragment : Fragment(), CharactersAdapter.CharacterItemListener {
         savedInstanceState: Bundle?
     ): View? {
         binding = CharactersFragmentBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         setupObservers()
-        return view
     }
 
     private fun setupRecyclerView() {
