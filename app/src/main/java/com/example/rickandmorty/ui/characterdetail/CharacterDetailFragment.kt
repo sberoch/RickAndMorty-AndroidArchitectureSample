@@ -24,11 +24,11 @@ class CharacterDetailFragment : Fragment() {
     private var binding: CharacterDetailFragmentBinding by autoCleared()
 
     @Inject
-    lateinit var plantDetailViewModelFactory: CharacterDetailViewModel.AssistedFactory
+    lateinit var characterDetailViewModelFactory: CharacterDetailViewModel.AssistedFactory
 
     private val viewModel: CharacterDetailViewModel by viewModels {
         CharacterDetailViewModel.provideFactory(
-            plantDetailViewModelFactory,
+            characterDetailViewModelFactory,
             charId ?: 0
         )
     }
