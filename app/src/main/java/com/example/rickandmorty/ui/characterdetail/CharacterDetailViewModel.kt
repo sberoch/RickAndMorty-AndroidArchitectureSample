@@ -1,28 +1,34 @@
 package com.example.rickandmorty.ui.characterdetail
 
-import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.*
 import com.example.rickandmorty.data.entities.Character
 import com.example.rickandmorty.data.repository.CharacterRepository
 import com.example.rickandmorty.utils.Resource
+import com.squareup.inject.assisted.Assisted
+import com.squareup.inject.assisted.AssistedInject
 
-class CharacterDetailViewModel @ViewModelInject constructor(
-    private val repository: CharacterRepository
+class CharacterDetailViewModel @AssistedInject constructor(
+    repository: CharacterRepository,
+    @Assisted val characterId: Int
 ) : ViewModel() {
 
-    private val _id = MutableLiveData<Int>()
-
-    private val _character = _id.switchMap { id ->
-        repository.getCharacter(id)
-    }
+    private val _character = repository.getCharacter(characterId)
     val character: LiveData<Resource<Character>> = _character
 
-
-    fun start(id: Int) {
-        _id.value = id
+    @AssistedInject.Factory
+    interface AssistedFactory {
+        fun create(characterId: Int): CharacterDetailViewModel
     }
 
+    companion object {
+        fun provideFactory(
+            assistedFactory: AssistedFactory,
+            characterId: Int
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return assistedFactory.create(characterId) as T
+            }
+        }
+    }
 }

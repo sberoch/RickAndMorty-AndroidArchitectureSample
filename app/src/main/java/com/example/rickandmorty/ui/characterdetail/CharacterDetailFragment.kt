@@ -12,15 +12,28 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.example.rickandmorty.data.entities.Character
 import com.example.rickandmorty.databinding.CharacterDetailFragmentBinding
+import com.example.rickandmorty.ui.characters.CharactersViewModel
 import com.example.rickandmorty.utils.Resource
 import com.example.rickandmorty.utils.autoCleared
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class CharacterDetailFragment : Fragment() {
 
     private var binding: CharacterDetailFragmentBinding by autoCleared()
-    private val viewModel: CharacterDetailViewModel by viewModels()
+
+    @Inject
+    lateinit var characterDetailViewModelFactory: CharacterDetailViewModel.AssistedFactory
+
+    private val viewModel: CharacterDetailViewModel by viewModels {
+        CharacterDetailViewModel.provideFactory(
+            characterDetailViewModelFactory,
+            charId ?: 0
+        )
+    }
+
+    private var charId: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,7 +45,7 @@ class CharacterDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        arguments?.getInt("id")?.let { viewModel.start(it) }
+        charId = arguments?.getInt("id")
         setupObservers()
     }
 
