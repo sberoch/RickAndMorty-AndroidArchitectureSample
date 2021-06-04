@@ -48,7 +48,10 @@ class CharactersViewModelTest : BaseTest() {
         }.returns(expected)
         testedObject.start()
         val obs = testedObject.characters.test()
-        obs.assertHasValue().
+        obs.assertHasValue()
+            .assertValue {
+                it == Resource.success(DummyObject.fakeListChar)
+            }
     }
 
 }
