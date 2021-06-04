@@ -8,17 +8,19 @@ import com.example.rickandmorty.data.remote.CharacterService
 import com.example.rickandmorty.data.repository.CharacterRepository
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import dagger.Binds
+import dagger.Component
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object AppModule {
 
     @Singleton
@@ -44,11 +46,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideCharacterDao(db: AppDatabase) = db.characterDao()
-
-    @Singleton
-    @Provides
     fun provideRepository(remoteDataSource: CharacterRemoteDataSource,
-                          localDataSource: CharacterDao) =
-        CharacterRepository(remoteDataSource, localDataSource)
+                          localDataSource: AppDatabase) =
+        CharacterRepository(remoteDataSource, localDataSource.characterDao())
 }

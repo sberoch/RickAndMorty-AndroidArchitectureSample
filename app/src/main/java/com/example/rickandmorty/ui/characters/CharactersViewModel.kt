@@ -1,16 +1,29 @@
 package com.example.rickandmorty.ui.characters
 
-import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.switchMap
+import com.bumptech.glide.load.engine.Resource
+import com.example.rickandmorty.data.entities.Character
 import com.example.rickandmorty.data.repository.CharacterRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class CharactersViewModel @ViewModelInject constructor(
+@HiltViewModel
+class CharactersViewModel @Inject constructor(
     private val repository: CharacterRepository
 ) : ViewModel() {
+    private val _invoke = MutableLiveData<Boolean>()
 
-    val characters = repository.getCharacters()
+
+    fun start() {
+        _invoke.value = true
+    }
+
+    var _char = _invoke.switchMap {
+        repository.getCharacters()
+    }
+
+    val characters: LiveData<com.example.rickandmorty.utils.Resource<List<Character>>> = _char
 }
